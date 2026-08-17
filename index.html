@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kasir PWA Pro</title>
+    
+    <!-- PWA Requirements -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e293b">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * { box-sizing: border-box; }
@@ -20,7 +26,7 @@
         .calc-box { background: #334155; padding: 10px; border-radius: 8px; margin-top: 15px; }
         #calcDisplay { background: #0f172a; padding: 10px; text-align: right; font-size: 20px; color: #38bdf8; border-radius: 4px; margin-bottom: 5px; }
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-        .grid button { padding: 15px; border: none; border-radius: 4px; background: #475569; color: white; font-weight: bold; }
+        .grid button { padding: 15px; border: none; border-radius: 4px; background: #475569; color: white; font-weight: bold; cursor: pointer; }
 
         /* Kanan: Nota */
         #right-panel { width: 350px; background: #f8fafc; color: #333; padding: 15px; border-left: 2px solid #334155; display: flex; flex-direction: column; transition: 0.3s; }
@@ -28,7 +34,7 @@
         .hide { display: none !important; }
 
         @media (max-width: 768px) {
-            body { flex-direction: column; overflow: auto; }
+            body { flex-direction: column; overflow: auto; height: auto; }
             #right-panel { width: 100%; height: auto; position: fixed; bottom: 0; z-index: 100; box-shadow: 0 -5px 15px rgba(0,0,0,0.3); }
         }
     </style>
@@ -36,7 +42,7 @@
 <body>
 
 <div id="left-panel">
-    <h2 style="text-align:center;">KASIR PWA</h2>
+    <h2 style="text-align:center; margin:5px 0;">KASIR PWA</h2>
     <div class="input-group"><label>Pelanggan</label><input type="text" id="sheet" placeholder="Nama..."></div>
     <div class="input-group"><label>Barang</label><input type="text" id="barang" placeholder="Nama Barang..."></div>
     <button class="btn-tambah" onclick="tambah()">TAMBAH KE NOTA</button>
@@ -52,17 +58,22 @@
     </div>
 </div>
 
-<div id="right-panel" id="panelNota">
-    <button onclick="document.getElementById('right-panel').classList.toggle('hide')" style="background:#64748b; color:white; border:none; padding:5px; margin-bottom:10px;">TUTUP / BUKA NOTA ↕</button>
+<div id="right-panel">
+    <button onclick="document.getElementById('right-panel').classList.toggle('hide')" style="background:#64748b; color:white; border:none; padding:6px; margin-bottom:10px; border-radius:4px; cursor:pointer;">TUTUP / BUKA NOTA ↕</button>
     <div class="nota-box" id="areaNota">
-        <div style="text-align:center; font-weight:bold; border-bottom:1px dashed #000;">NOTA</div>
-        <div id="list"></div>
-        <div style="border-top:2px solid #000; margin-top:10px; font-weight:bold;">TOTAL: <span id="total">0</span></div>
+        <div style="text-align:center; font-weight:bold; border-bottom:1px dashed #000; padding-bottom:5px;">NOTA</div>
+        <div id="list" style="margin-top:5px; max-height:150px; overflow-y:auto;"></div>
+        <div style="border-top:2px solid #000; margin-top:10px; padding-top:5px; font-weight:bold; display:flex; justify-content:space-between;"><span>TOTAL:</span> <span id="total">0</span></div>
     </div>
-    <button onclick="download()" style="margin-top:10px; padding:10px; background:#0284c7; color:white; border:none;">DOWNLOAD PNG</button>
+    <button onclick="download()" style="margin-top:10px; padding:10px; background:#0284c7; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">DOWNLOAD PNG</button>
 </div>
 
 <script>
+    // Registrasi Service Worker untuk PWA
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
+    }
+
     let items = []; let calcStr = "";
     function input(v) { calcStr += v; document.getElementById('calcDisplay').innerText = calcStr; }
     function backspace() { calcStr = calcStr.slice(0, -1); document.getElementById('calcDisplay').innerText = calcStr || "0"; }
@@ -72,14 +83,18 @@
     function tambah() {
         let b = document.getElementById('barang').value;
         let h = document.getElementById('calcDisplay').innerText;
+        if(!b) { alert("Isi nama barang dulu!"); return; }
         items.push({b, h});
         let html = ""; let tot = 0;
-        items.forEach(i => { html += `<div>${i.b} : ${i.h}</div>`; tot += parseInt(i.h) || 0; });
+        items.forEach(i => { html += `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>${i.b}</span> <span>${i.h}</span></div>`; tot += parseInt(i.h) || 0; });
         document.getElementById('list').innerHTML = html;
         document.getElementById('total').innerText = tot;
+        document.getElementById('barang').value = "";
+        clearCalc();
     }
 
     function download() {
+        if(items.length === 0) { alert("Nota kosong!"); return; }
         html2canvas(document.getElementById('areaNota')).then(c => {
             let a = document.createElement('a'); a.href = c.toDataURL(); a.download = "nota.png"; a.click();
         });
