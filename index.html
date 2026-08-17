@@ -10,46 +10,50 @@
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; margin: 0; background: #334155; }
-        
-        #left-panel { flex: 1; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto; }
-        h2 { margin-top: 0; font-size: 20px; text-align: center; border-bottom: 2px solid #475569; padding-bottom: 10px; }
-        
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; font-size: 12px; margin-bottom: 4px; color: #cbd5e1; }
-        .input-group input, .input-group select { width: 100%; padding: 10px; border-radius: 6px; border: none; font-size: 14px; }
-        
-        .btn-tambah { background: #2563eb; color: white; border: none; width: 100%; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; margin-bottom: 15px; }
-        .btn-tambah:hover { background: #1d4ed8; }
+    <style>* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; margin: 0; background: #334155; }
 
-        .calc-container { background: #1e293b; padding: 10px; border-radius: 8px; }
-        .calc-display { text-align: right; font-size: 22px; padding: 10px; background: #0f172a; color: #38bdf8; border-radius: 4px; margin-bottom: 8px; font-family: monospace; word-break: break-all; min-height: 45px; }
-        .calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .calc-keys button { padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 4px; background: #475569; color: white; cursor: pointer; }
-        .calc-keys button:hover { background: #64748b; }
-        .calc-keys button.btn-c { background: #dc2626; }
-        .calc-keys button.btn-op { background: #d97706; }
+#left-panel { flex: 1; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto; }
+h2 { margin-top: 0; font-size: 18px; text-align: center; border-bottom: 2px solid #475569; padding-bottom: 8px; }
 
-        #right-panel { width: 420px; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; border-left: 2px dashed #cbd5e1; }
-        
-        .nota-box { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .nota-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 8px; margin-bottom: 10px; font-size: 15px; }
-        
-        .nota-items-list { flex-grow: 1; overflow-y: auto; max-height: 320px; }
-        .nota-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; align-items: flex-start; }
-        .nota-total { border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; font-weight: bold; display: flex; justify-content: space-between; font-size: 16px; }
-        
-        .btn-action { width: 100%; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; border: none; color: white; }
-        .btn-download { background: #0284c7; }
-        .btn-download:hover { background: #0369a1; }
-        .btn-sync { background: #16a34a; }
-        .btn-sync:hover { background: #15803d; }
-        .btn-reset { background: #475569; }
-        .btn-reset:hover { background: #334155; }
-        
-        .footer-status { font-size: 11px; text-align: center; margin-top: 8px; color: #94a3b8; }
+.input-group { margin-bottom: 8px; }
+.input-group label { display: block; font-size: 11px; margin-bottom: 2px; color: #cbd5e1; }
+.input-group input, .input-group select { width: 100%; padding: 8px; border-radius: 4px; border: none; font-size: 13px; }
+
+.btn-tambah { background: #2563eb; color: white; border: none; width: 100%; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px; margin-bottom: 10px; }
+.btn-tambah:hover { background: #1d4ed8; }
+
+/* Ukuran Kalkulator */
+.calc-container { background: #1e293b; padding: 8px; border-radius: 8px; }
+.calc-display { text-align: right; font-size: 18px; padding: 8px; background: #0f172a; color: #38bdf8; border-radius: 4px; margin-bottom: 6px; font-family: monospace; min-height: 40px; }
+.calc-keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.calc-keys button { padding: 10px; font-size: 14px; font-weight: bold; border: none; border-radius: 4px; background: #475569; color: white; cursor: pointer; }
+.calc-keys button:hover { background: #64748b; }
+.calc-keys button.btn-c { background: #dc2626; }
+.calc-keys button.btn-op { background: #d97706; }
+
+/* Panel Kanan (Nota) */
+#right-panel { width: 360px; background: #f8fafc; padding: 15px; display: flex; flex-direction: column; border-left: 2px dashed #cbd5e1; }
+
+.nota-box { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; flex-grow: 1; display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); font-size: 11px; /* FONT NOTA DIKECILKAN */ }
+.nota-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; /* HEADER NOTA DIKECILKAN */ }
+
+.nota-items-list { flex-grow: 1; overflow-y: auto; max-height: 280px; /* Sedikit dikurangi tinggi maksimalnya */ }
+.nota-row { display: flex; justify-content: space-between; font-size: 11px; /* ROW NOTA DIKECILKAN */ padding: 4px 0; border-bottom: 1px solid #f1f5f9; align-items: flex-start; }
+.nota-total { border-top: 2px solid #000; margin-top: 6px; padding-top: 6px; font-weight: bold; display: flex; justify-content: space-between; font-size: 14px; /* TOTAL NOTA DIKECILKAN */ }
+
+.status-pending { color: #d97706; font-size: 10px; }
+.status-synced { color: #16a34a; font-size: 10px; }
+
+.btn-action { width: 100%; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 8px; font-size: 13px; border: none; color: white; }
+.btn-download { background: #0284c7; }
+.btn-download:hover { background: #0369a1; }
+.btn-sync { background: #16a34a; }
+.btn-sync:hover { background: #15803d; }
+.btn-reset { background: #475569; }
+.btn-reset:hover { background: #334155; }
+
+.footer-status { font-size: 10px; text-align: center; margin-top: 6px; color: #94a3b8; }
     </style>
 </head>
 <body>
